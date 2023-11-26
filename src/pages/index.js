@@ -49,38 +49,40 @@ const Home = () => {
   };
 
   return (
-    <div className='flex flex-row'>
-      <div>
-        <button onClick={fetchPalette}>Generate</button>
-        <div className='flex flex-row'>
-          {colors.map((color, index) => (
-            <div key={index} style={{ backgroundColor: `rgb(${color.join(',')})`, height: '50px', width: '50px' }} />
-          ))}
-        </div>
-        <div className='width-50'>
-          <ExampleArt
-              backgroundColor={colors[0] ? rgbaToCss(colors[0]) : '#A1ADFF'} // First color for background
-              color1={colors[1] ? rgbaToCss(colors[1]) : '#ff3118'} // Second color for SVG paths
-              color2={colors[2] ? rgbaToCss(colors[2]) : '#c66300'} // Third color for SVG paths
-              color3={colors[3] ? rgbaToCss(colors[3]) : '#ff945a'} // Default color or third color from the palette
-          />
-
-        </div>
-        <button onClick={transferColors}>Save Palette</button>
-        <div>
-          <div>
-            <input
-              type="number" 
-              value={indexStart} 
-              onChange={handleIndexChange} 
-              placeholder="Enter a number"
-            >
-            </input>
+    <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
+      <div className='md:flex md:flex-row flex-wrap justify-around'>
+        <div className='w-2/5'>
+          <h2>Generate Palette</h2>
+          <button onClick={fetchPalette}>Generate</button>
+          <div className='flex flex-row'>
+            {colors.map((color, index) => (
+              <div key={index} style={{ backgroundColor: `rgb(${color.join(',')})`, height: '50px', width: '50px' }} />
+            ))}
           </div>
-      </div>
-      <div>
-        <h3>JSON Output</h3>
-        <button onClick={copyToClipboard}>Copy JSON</button>
+          <div>
+            <h3>Palette Preview</h3>
+            <ExampleArt
+                backgroundColor={colors[0] ? rgbaToCss(colors[0]) : '#A1ADFF'} // First color for background
+                color1={colors[1] ? rgbaToCss(colors[1]) : '#ff3118'} // Second color for SVG paths
+                color2={colors[2] ? rgbaToCss(colors[2]) : '#c66300'} // Third color for SVG paths
+                color3={colors[3] ? rgbaToCss(colors[3]) : '#ff945a'} // Default color or third color from the palette
+            />
+
+          </div>
+          <button onClick={transferColors}>Save Palette</button>
+        </div>
+      <div className='w-3/5'>
+        <h2>JSON Output</h2>
+        <p>Starting Row</p>
+          <input
+            className='border border-sky-500'
+            type="number" 
+            value={indexStart} 
+            onChange={handleIndexChange} 
+            placeholder="Enter a number"
+          >
+          </input>
+        <button className="border border-sky-500" onClick={copyToClipboard}>Copy JSON</button>
         <pre style={codeBlockStyles}>
           <code>
             <div ref={jsonRef}>
@@ -110,5 +112,8 @@ const codeBlockStyles = {
   padding: "10px",             // Some padding for spacing
   overflowX: "auto",           // Handle horizontal overflow
   whiteSpace: "pre-wrap",      // Wrapping for long lines
-  wordBreak: "break-all"       // Break lines to prevent horizontal scrolling
+  wordBreak: "break-all",
+  width: "100%",
+  overflow: "scroll",
+
 };

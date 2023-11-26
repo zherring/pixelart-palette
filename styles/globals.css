@@ -12,3 +12,17 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+h2 { font-size: larger; margin: 1em 0; }
+
+input, button { 
+  padding: 1rem; 
+  border-radius: 5px;
+  border: 1px solid rgb(0, 162, 255);
+  margin: .25rem;
+}
+
+button {
+  color: white;
+  background: rgb(0,162, 255);
+}
