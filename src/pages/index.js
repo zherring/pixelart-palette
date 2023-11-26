@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import ExampleArt from '/components/ExampleArt';
+import ExampleArt from '../../components/ExampleArt';
  
 
 const Home = () => {
