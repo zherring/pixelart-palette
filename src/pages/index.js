@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import ExampleArt from '/components/ExampleArt';
  
@@ -27,26 +27,52 @@ const Home = () => {
     });
   };
 
-  const fetchPalette = () => {
+  const fetchPalette = useCallback(() => {
     const data = {
       model: "default",
       // input: [[44, 43, 44], [90, 83, 82], "N", "N", "N"]
-    };
+    }
+      // pull
+      axios.post('/api/colormind', data)
+        .then(response => {
+          setColors(response.data.result);
+        })
+        .catch(error => {
+          console.error('Error fetching color palette:', error);
+        });
+  }, []); 
 
-  
-    axios.post('/api/colormind', data)
-      .then(response => {
-        setColors(response.data.result);
-      })
-      .catch(error => {
-        console.error('Error fetching color palette:', error);
-      });
-  };
+
+  // const fetchPalette = () => {
+  //   const data = {
+  //     model: "default",
+  //     // input: [[44, 43, 44], [90, 83, 82], "N", "N", "N"]
+  //   };
+  // };
   
 
   const transferColors = () => {
     setPaletteList([...paletteList, { theme: "null", palette: colors }]);
   };
+
+  // hotkeys
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === 'Space') {
+        fetchPalette();
+      } else if (event.shiftKey && event.code === 'KeyS') {
+        console.log("fired!");
+        transferColors();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Clean up the event listener
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [fetchPalette, copyToClipboard]);
 
   return (
     <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
@@ -54,6 +80,7 @@ const Home = () => {
         <div className='w-2/5'>
           <h2>Generate Palette</h2>
           <button onClick={fetchPalette}>Generate</button>
+          <small>Spacebar</small>
           <div className='flex flex-row'>
             {colors.map((color, index) => (
               <div key={index} style={{ backgroundColor: `rgb(${color.join(',')})`, height: '50px', width: '50px' }} />
@@ -117,3 +144,4 @@ const codeBlockStyles = {
   overflow: "scroll",
 
 };
+
