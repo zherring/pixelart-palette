@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import ExampleArt from '../../components/ExampleArt';
+import ExampleArt from '../components/ExampleArt';
  
 
 const Home = () => {
@@ -88,6 +88,7 @@ const Home = () => {
 
           </div>
           <button onClick={transferColors}>Save Palette</button>
+          <small>Shift + S</small>
         </div>
       <div className='w-3/5'>
         <h2>JSON Output</h2>
