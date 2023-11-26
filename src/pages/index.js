@@ -52,7 +52,6 @@ const Home = () => {
       if (event.code === 'Space') {
         fetchPalette();
       } else if (event.shiftKey && event.code === 'KeyS') {
-        console.log("fired!");
         transferColors();
       }
     };
@@ -70,8 +69,17 @@ const Home = () => {
       <div className='md:flex md:flex-row flex-wrap justify-around'>
         <div className='w-2/5'>
           <h2>Generate Palette</h2>
-          <button onClick={fetchPalette}>Generate</button>
-          <small>Spacebar</small>
+          <div id="controls" className='flex flex-row justify-between'>
+            <div className='flex flex-col'>
+              <button onClick={fetchPalette}>Generate</button>
+              <small>Spacebar</small>
+            </div>
+            <div className='flex flex-col align-center'>
+              <button onClick={transferColors}>Save Palette</button>
+              <small>Shift + S</small>
+            </div>
+
+          </div>
           <div className='flex flex-row'>
             {colors.map((color, index) => (
               <div key={index} style={{ backgroundColor: `rgb(${color.join(',')})`, height: '50px', width: '50px' }} />
@@ -84,11 +92,11 @@ const Home = () => {
                 color1={colors[1] ? rgbaToCss(colors[1]) : '#ff3118'} // Second color for SVG paths
                 color2={colors[2] ? rgbaToCss(colors[2]) : '#c66300'} // Third color for SVG paths
                 color3={colors[3] ? rgbaToCss(colors[3]) : '#ff945a'} // Default color or third color from the palette
+                color4={colors[4] ? rgbaToCss(colors[4]) : '#DE5918'} // Default color or fourth color from the palette
+
             />
 
           </div>
-          <button onClick={transferColors}>Save Palette</button>
-          <small>Shift + S</small>
         </div>
       <div className='w-3/5'>
         <h2>JSON Output</h2>
