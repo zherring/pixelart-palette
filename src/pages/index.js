@@ -42,15 +42,6 @@ const Home = () => {
         });
   }, []); 
 
-
-  // const fetchPalette = () => {
-  //   const data = {
-  //     model: "default",
-  //     // input: [[44, 43, 44], [90, 83, 82], "N", "N", "N"]
-  //   };
-  // };
-  
-
   const transferColors = () => {
     setPaletteList([...paletteList, { theme: "null", palette: colors }]);
   };
