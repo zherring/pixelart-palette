@@ -1,12 +1,14 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import ExampleArt from '../components/ExampleArt';
+import ColorModelSelector from '@/components/colorModelSelector';
  
 
 const Home = () => {
   const [colors, setColors] = useState([]);
   const [paletteList, setPaletteList] = useState([]);
   const [indexStart, setIndexStart] = useState(0);
+  const [model, setModel] = useState('default');
 
   const rgbaToCss = (rgba) => `rgba(${rgba.join(',')})`;
 
@@ -29,8 +31,7 @@ const Home = () => {
 
   const fetchPalette = useCallback(() => {
     const data = {
-      model: "default",
-      // input: [[44, 43, 44], [90, 83, 82], "N", "N", "N"]
+      model: model
     }
       // pull
       axios.post('/api/colormind', data)
@@ -40,10 +41,10 @@ const Home = () => {
         .catch(error => {
           console.error('Error fetching color palette:', error);
         });
-  }, []); 
+  }, [model]); 
 
   const transferColors = () => {
-    setPaletteList([...paletteList, { theme: "null", palette: colors }]);
+    setPaletteList([...paletteList, { theme: null, palette: colors }]);
   };
 
   // hotkeys
@@ -69,6 +70,7 @@ const Home = () => {
       <div className='md:flex md:flex-row flex-wrap justify-around'>
         <div className='w-2/5'>
           <h2>Generate Palette</h2>
+          <ColorModelSelector onModelChange={setModel} />
           <div id="controls" className='flex flex-row justify-between'>
             <div className='flex flex-col'>
               <button onClick={fetchPalette}>Generate</button>
