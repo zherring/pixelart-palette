@@ -2,7 +2,8 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import ExampleArt from '../components/ExampleArt';
 import ColorModelSelector from '@/components/colorModelSelector';
- 
+import PaletteTab from '@/components/paletteTab';
+import PaletteDisplay from '@/components/paletteDisplay'; // Adjust the path as necessary
 
 const Home = () => {
   const [colors, setColors] = useState([]);
@@ -12,6 +13,13 @@ const Home = () => {
 
   const rgbaToCss = (rgba) => `rgba(${rgba.join(',')})`;
 
+  const updateColor = (id, newColor) => {
+    const [paletteIndex, colorIndex] = id.split('-').map(Number);
+    const newPaletteList = [...paletteList];
+    newPaletteList[paletteIndex].palette[colorIndex] = newColor;
+    setPaletteList(newPaletteList);
+  };
+  
   // dynamic index set
   const handleIndexChange = (event) => {
     setIndexStart(Number(event.target.value));
@@ -101,6 +109,8 @@ const Home = () => {
           </div>
         </div>
       <div className='w-3/5'>
+      <PaletteDisplay paletteList={paletteList} updateColor={updateColor} />
+
         <h2>JSON Output</h2>
         <p>Starting Row</p>
           <input
@@ -111,7 +121,7 @@ const Home = () => {
             placeholder="Enter a number"
           >
           </input>
-        <button className="border border-sky-500" onClick={copyToClipboard}>Copy JSON</button>
+        <button className="border border-sky-500" onClick={copyToClipboard}>Copy JSON</button>        
         <pre style={codeBlockStyles}>
           <code>
             <div ref={jsonRef}>
