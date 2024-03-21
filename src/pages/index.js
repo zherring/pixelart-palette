@@ -3,7 +3,9 @@ import axios from 'axios';
 import ExampleArt from '../components/ExampleArt';
 import ColorModelSelector from '@/components/colorModelSelector';
 import PaletteTab from '@/components/paletteTab';
-import PaletteDisplay from '@/components/paletteDisplay'; // Adjust the path as necessary
+import PaletteDisplay from '@/components/paletteDisplay'; 
+import { rgbArrayToHex } from '../utils/colorUtils';
+
 
 const Home = () => {
   const [colors, setColors] = useState([]);
@@ -43,13 +45,14 @@ const Home = () => {
     }
       // pull
       axios.post('/api/colormind', data)
-        .then(response => {
-          setColors(response.data.result);
-        })
-        .catch(error => {
-          console.error('Error fetching color palette:', error);
-        });
-  }, [model]); 
+      .then(response => {
+        const hexColors = response.data.result.map(rgbArray => rgbArrayToHex(rgbArray));
+        setColors(hexColors); // Assuming setColors updates state with hex color values
+      })
+      .catch(error => {
+        console.error('Error fetching color palette:', error);
+      });
+  }, [model]);
 
   const transferColors = () => {
     setPaletteList([...paletteList, { theme: null, palette: colors }]);
@@ -92,24 +95,24 @@ const Home = () => {
           </div>
           <div className='flex flex-row'>
             {colors.map((color, index) => (
-              <div key={index} style={{ backgroundColor: `rgb(${color.join(',')})`, height: '50px', width: '50px' }} />
+              <div key={index} style={{ backgroundColor: color, height: '50px', width: '50px' }} />
             ))}
           </div>
           <div>
             <h3>Palette Preview</h3>
             <ExampleArt
-                backgroundColor={colors[0] ? rgbaToCss(colors[0]) : '#A1ADFF'} // First color for background
-                color1={colors[1] ? rgbaToCss(colors[1]) : '#ff3118'} // Second color for SVG paths
-                color2={colors[2] ? rgbaToCss(colors[2]) : '#c66300'} // Third color for SVG paths
-                color3={colors[3] ? rgbaToCss(colors[3]) : '#ff945a'} // Default color or third color from the palette
-                color4={colors[4] ? rgbaToCss(colors[4]) : '#DE5918'} // Default color or fourth color from the palette
+                backgroundColor={colors[0] ? colors[0] : '#A1ADFF'} // First color for background
+                color1={colors[1] ? colors[1] : '#ff3118'} // Second color for SVG paths
+                color2={colors[2] ? colors[2] : '#c66300'} // Third color for SVG paths
+                color3={colors[3] ? colors[3] : '#ff945a'} // Default color or third color from the palette
+                color4={colors[4] ? colors[4] : '#DE5918'} // Default color or fourth color from the palette
 
             />
 
           </div>
         </div>
       <div className='w-3/5'>
-      <PaletteDisplay paletteList={paletteList} updateColor={updateColor} />
+      <PaletteDisplay paletteList={paletteList} updateColor={updateColor} setPaletteList={setPaletteList} />
 
         <h2>JSON Output</h2>
         <p>Starting Row</p>
@@ -127,7 +130,7 @@ const Home = () => {
             <div ref={jsonRef}>
               {paletteList.map((item, index) => (
                 <div key={index}>
-                {`${index + indexStart}: { theme: ${item.theme ? `'${item.theme}'` : null}, palette: [${item.palette.map(rgb => `'#${rgb.map(v => v.toString(16).padStart(2, '0')).join('')}'`).join(', ')}] },`}
+                {`${index + indexStart}: { theme: ${item.theme ? `'${item.theme}'` : null}, palette: [${item.palette.map(rgb => `'${rgb}'`).join(', ')}] },`}
               </div>
               ))}
             </div>
