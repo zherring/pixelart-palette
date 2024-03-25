@@ -2,12 +2,40 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SketchPicker } from 'react-color';
 import chroma from 'chroma-js';
 
-const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
-  const [showPicker, setShowPicker] = useState(false);
-  const [currentColor, setCurrentColor] = useState('');
-  const pickerRef = useRef(); // Ref to the SketchPicker or its container
-  const [currentId, setCurrentId] = useState(null);
+const PaletteDisplay = ({ paletteList, setPaletteList }) => {
+  const [editing, setEditing] = useState({ paletteIndex: null, colorIndex: null });
 
+
+  /// edit color w/ input
+  const [editingColorIndex, setEditingColorIndex] = useState(null);
+  const [editingPaletteIndex, setEditingPaletteIndex] = useState(null);
+
+  // sets active color editing to show input
+  const handleColorClick = (paletteIndex, colorIndex, event) => {
+    event.stopPropagation(); // Prevent event bubbling
+    const isSameColor = editing.paletteIndex === paletteIndex && editing.colorIndex === colorIndex;
+    if (isSameColor) {
+      // Delay hiding to allow for other events to be cancelled
+      setTimeout(() => setEditing({ paletteIndex: null, colorIndex: null }), 10);
+    } else {
+      setEditing({ paletteIndex, colorIndex });
+    }
+  };
+
+  // Handle color change
+  const handleColorChange = (e, paletteIndex, colorIndex) => {
+    const newPaletteList = [...paletteList];
+    newPaletteList[paletteIndex].palette[colorIndex] = e.target.value;
+    setPaletteList(newPaletteList);
+  };
+
+    // Clicking away to close the input
+    useEffect(() => {
+      const closeInput = () => setEditing({ paletteIndex: null, colorIndex: null });
+      document.addEventListener('click', closeInput);
+      return () => document.removeEventListener('click', closeInput);
+    }, []);
+  
 
   const deleteColor = (paletteIndex, colorIndex) => {
     // Create a new array with the specific color removed
@@ -24,9 +52,10 @@ const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
   };
 
   // const handleColorClick = (color, id) => {
-  //   setCurrentColor(color); // color is already a hex string
-  //   setCurrentId(id);
-  //   setShowPicker(true);
+  //   setEditingColorIndex(index); // Set the currently editing color's index
+  //   // setCurrentColor(color); // color is already a hex string
+  //   // setCurrentId(id);
+  //   // setShowPicker(true);
   // };
 
   const handleChangeComplete = (color) => {
@@ -34,17 +63,17 @@ const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
   };
 
   // Close the picker when clicking outside of it
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (showPicker && pickerRef.current && !pickerRef.current.contains(event.target)) {
-        setShowPicker(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (showPicker && pickerRef.current && !pickerRef.current.contains(event.target)) {
+  //       setShowPicker(false);
+  //     }
+  //   };
 
-    // Add when the picker is shown and remove when it is hidden
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showPicker]); // Re-run when showPicker changes
+  //   // Add when the picker is shown and remove when it is hidden
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   return () => document.removeEventListener('mousedown', handleClickOutside);
+  // }, [showPicker]); // Re-run when showPicker changes
 
   const deletePalette = (indexToDelete) => {
     // Create a new array excluding the palette at indexToDelete
@@ -56,12 +85,14 @@ const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
     <div>
       {paletteList.map((item, paletteIndex) => (
         <div className='flex flex-row' key={paletteIndex}>
+          {}
           {item.palette.map((color, colorIndex) => (
             <div className="relative flex flex-col m-3">
               <div
               key={colorIndex} 
               className='relative'
               style={{ backgroundColor: color, width: '50px', height: '50px', margin: '5px' }} 
+              onClick={(e) => handleColorClick(paletteIndex, colorIndex, e)}
               > </div>
               <div className='flex flex-row justify-around'>
                 <div 
@@ -90,6 +121,15 @@ const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
                 style={{ paddingLeft:"4px", width: '10px', height: '10px', fontSize: '12px' }}
               >🌒</div>
             </div>
+            {editing.paletteIndex === paletteIndex && editing.colorIndex === colorIndex && (
+                <input
+                  type="text"
+                  value={color}
+                  onChange={(e) => handleColorChange(e, paletteIndex, colorIndex)}
+                  className="mt-2 w-[100px]"
+                  autoFocus
+                />
+              )}
           </div>
           ))}
             <button onClick={() => deletePalette(paletteIndex)} className="cursoml-4 py-2 px-4 bg-red-500 text-white rounded">Delete</button>
