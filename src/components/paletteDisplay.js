@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SketchPicker } from 'react-color';
+import chroma from 'chroma-js';
 
 const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
   const [showPicker, setShowPicker] = useState(false);
@@ -56,23 +57,43 @@ const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
       {paletteList.map((item, paletteIndex) => (
         <div className='flex flex-row' key={paletteIndex}>
           {item.palette.map((color, colorIndex) => (
-            <div className="relative">
+            <div className="relative flex flex-col m-3">
               <div
               key={colorIndex} 
               className='relative'
               style={{ backgroundColor: color, width: '50px', height: '50px', margin: '5px' }} 
-              onClick={() => handleColorClick(color, `${paletteIndex}-${colorIndex}`)}
-            >
-              </div>
-               <div 
-                onClick={() => deleteColor(paletteIndex, colorIndex)} 
+              > </div>
+              <div className='flex flex-row justify-around'>
+                <div 
+                  onClick={() => deleteColor(paletteIndex, colorIndex)} 
+                  className="cursor-pointer"
+                  style={{ paddingLeft:"4px", width: '10px', height: '10px', fontSize: '12px' }}
+                >🗑️</div>
+              <div 
+                onClick={() => {
+                  const newColor = chroma(color).brighten().hex();
+                  const newPalette = [...paletteList];
+                  newPalette[paletteIndex].palette.splice(colorIndex + 1, 0, newColor);
+                  setPaletteList(newPalette);
+                }} 
                 className="cursor-pointer"
                 style={{ paddingLeft:"4px", width: '10px', height: '10px', fontSize: '12px' }}
-              >🗑️</div>
+              >🔆</div>
+              <div 
+                onClick={() => {
+                  const newColor = chroma(color).darken().hex();
+                  const newPalette = [...paletteList];
+                  newPalette[paletteIndex].palette.splice(colorIndex + 1, 0, newColor);
+                  setPaletteList(newPalette);
+                }} 
+                className="cursor-pointer"
+                style={{ paddingLeft:"4px", width: '10px', height: '10px', fontSize: '12px' }}
+              >🌒</div>
             </div>
+          </div>
           ))}
             <button onClick={() => deletePalette(paletteIndex)} className="cursoml-4 py-2 px-4 bg-red-500 text-white rounded">Delete</button>
-        </div>
+      </div>
       ))}
         {/* <SketchPicker color={currentColor} disableAlpha={true} /> */}
       {/* {showPicker ? 

@@ -112,19 +112,23 @@ const Home = () => {
           </div>
         </div>
       <div className='w-3/5 h-screen overflow-y-auto'>
-      <PaletteDisplay paletteList={paletteList} updateColor={updateColor} setPaletteList={setPaletteList} />
+        <div className='flex flex-row justify-around'>
+          <h2>Palette List</h2><button className="border border-sky-500" onClick={copyToClipboard}>Copy JSON</button>        
+          <div>
+            Starting Row
+            <input
+              className='w-20 border border-sky-500'
+              type="number" 
+              value={indexStart} 
+              onChange={handleIndexChange} 
+              placeholder="Enter a number"
+            > 
+            </input>
+          </div>
 
-        <h2>JSON Output</h2>
+        </div>
+          <PaletteDisplay paletteList={paletteList} updateColor={updateColor} setPaletteList={setPaletteList} />
         <p>Starting Row</p>
-          <input
-            className='border border-sky-500'
-            type="number" 
-            value={indexStart} 
-            onChange={handleIndexChange} 
-            placeholder="Enter a number"
-          >
-          </input>
-        <button className="border border-sky-500" onClick={copyToClipboard}>Copy JSON</button>        
         <pre style={codeBlockStyles}>
           <code>
             <div ref={jsonRef}>
