@@ -8,11 +8,25 @@ const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
   const [currentId, setCurrentId] = useState(null);
 
 
-  const handleColorClick = (color, id) => {
-    setCurrentColor(color); // color is already a hex string
-    setCurrentId(id);
-    setShowPicker(true);
+  const deleteColor = (paletteIndex, colorIndex) => {
+    // Create a new array with the specific color removed
+    const newPaletteList = paletteList.map((item, index) => {
+      if (index === paletteIndex) {
+        return {
+          ...item,
+          palette: item.palette.filter((_, idx) => idx !== colorIndex),
+        };
+      }
+      return item;
+    });
+    setPaletteList(newPaletteList);
   };
+
+  // const handleColorClick = (color, id) => {
+  //   setCurrentColor(color); // color is already a hex string
+  //   setCurrentId(id);
+  //   setShowPicker(true);
+  // };
 
   const handleChangeComplete = (color) => {
     updateColor(currentId, color.hex); // Use the hex value directly
@@ -42,18 +56,30 @@ const PaletteDisplay = ({ paletteList, updateColor, setPaletteList }) => {
       {paletteList.map((item, paletteIndex) => (
         <div className='flex flex-row' key={paletteIndex}>
           {item.palette.map((color, colorIndex) => (
-            <div 
+            <div className="relative">
+              <div
               key={colorIndex} 
+              className='relative'
               style={{ backgroundColor: color, width: '50px', height: '50px', margin: '5px' }} 
               onClick={() => handleColorClick(color, `${paletteIndex}-${colorIndex}`)}
             >
+              </div>
+               <div 
+                onClick={() => deleteColor(paletteIndex, colorIndex)} 
+                className="cursor-pointer"
+                style={{ paddingLeft:"4px", width: '10px', height: '10px', fontSize: '12px' }}
+              >🗑️</div>
             </div>
           ))}
-            <button onClick={() => deletePalette(paletteIndex)} className="ml-4 py-2 px-4 bg-red-500 text-white rounded">Delete Palette</button>
+            <button onClick={() => deletePalette(paletteIndex)} className="cursoml-4 py-2 px-4 bg-red-500 text-white rounded">Delete</button>
         </div>
       ))}
-      {showPicker ? <SketchPicker color={currentColor} onChangeComplete={handleChangeComplete} /> : null}
-      <button></button>
+        {/* <SketchPicker color={currentColor} disableAlpha={true} /> */}
+      {/* {showPicker ? 
+        <SketchPicker 
+          color={currentColor} 
+          onChangeComplete={handleChangeComplete} 
+          disableAlpha={true} /> : null}  */}
     </div>
   );
 };

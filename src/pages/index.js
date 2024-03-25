@@ -1,8 +1,8 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import ExampleArt from '../components/ExampleArt';
-import ColorModelSelector from '@/components/colorModelSelector';
-import PaletteTab from '@/components/paletteTab';
+// import ColorModelSelector from '@/components/colorModelSelector';
+// import PaletteTab from '@/components/paletteTab';
 import PaletteDisplay from '@/components/paletteDisplay'; 
 import { rgbArrayToHex } from '../utils/colorUtils';
 
@@ -81,7 +81,7 @@ const Home = () => {
       <div className='md:flex md:flex-row flex-wrap justify-around'>
         <div className='w-2/5'>
           <h2>Generate Palette</h2>
-          <ColorModelSelector onModelChange={setModel} />
+          {/* <ColorModelSelector onModelChange={setModel} /> */}
           <div id="controls" className='flex flex-row justify-between'>
             <div className='flex flex-col'>
               <button onClick={fetchPalette}>Generate</button>
@@ -111,7 +111,7 @@ const Home = () => {
 
           </div>
         </div>
-      <div className='w-3/5'>
+      <div className='w-3/5 h-screen overflow-y-auto'>
       <PaletteDisplay paletteList={paletteList} updateColor={updateColor} setPaletteList={setPaletteList} />
 
         <h2>JSON Output</h2>
