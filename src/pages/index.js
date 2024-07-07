@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import ExampleArt from '../components/ExampleArt';
 import PaletteDisplay from '@/components/paletteDisplay'; 
-import JsonModal from '@/components/JsonModal'; // Import the JsonModal component
+import JsonModal from '@/components/jsonModal'; // Import the JsonModal component
 import { rgbArrayToHex } from '../utils/colorUtils';
 
 const Home = () => {
